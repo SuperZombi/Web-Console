@@ -1,0 +1,71 @@
+.tree {
+	font-family: monospace;
+	font-size: 15px;
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+.tree::before{
+	content: '{';
+}
+.tree::after{
+	content: '}';
+}
+
+.tree .value[type="none"]{
+	color: #807777;
+}
+.tree .value[type="bool"]{
+	color: #f859a8;
+}
+.tree .value[type="str"]{
+	color: #fe8040;
+}
+.tree .value[type="int"]{
+	color: #7b80f2;
+}
+.tree .value,
+.tree details summary {
+	white-space: nowrap;
+}
+
+.tree details {
+	display: inline-block;
+}
+.tree details[open]{
+	display: inline;
+}
+.tree .key::after {
+	content: ":";
+	margin: 0.3rem;
+}
+
+.tree details > summary .value::before {
+	content: "{...}";
+}
+.tree details[open] > summary .value::before {
+	content: "{";
+}
+.tree details[open]::after {
+	content: "}";
+}
+
+.tree details[type="array"] > summary .value::before {
+	content: "[...]";
+}
+.tree details[type="array"][open] > summary .value::before {
+	content: "[";
+}
+.tree details[type="array"][open]::after {
+	content: "]";
+}
+
+.tree ul {
+	list-style-type: none;
+	padding-left: 2.5rem;
+}
+.tree ul li {
+	margin: 0.3rem 0;
+}
+.tree ul li:not(:last-child)::after{
+	content: ",";
+}
