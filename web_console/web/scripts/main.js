@@ -1,49 +1,54 @@
-
-let data;
-data = {
-	"firstName": "John",
-	"lastName": "Smith",
-	"isAlive": true,
-	"age": 25,
-	"company": null,
-	"height_cm": 167.64,
-	"address": {
-		"streetAddress": "21 2nd Street",
-		"city": "New York",
-		"state": "NY",
-		"postalCode": "10021-3100"
-	},
-	"phoneNumbers": [
-		{
-			"type": "home",
-			"number": "212 555-1234"
-		},
-		{
-			"type": "fax",
-			"number": "646 555-4567",
-			"other": ["1234", "4567", "7894"],
-			"other2": {
-				"text": {
-					"hello": {
-						"world": "Main"
-					}
-				}
-			}
-		}
-	]
-}
-
 window.onload = _=> {
-	document.querySelector("#root").appendChild(buildNode(data))
-
 	const socket = io();
-	
 	socket.on('connect', _=>{
+		document.querySelector("#console").innerHTML = ""
 		socket.emit('get_history', data=>{
-			console.log(data)
+			data.forEach(item=>{
+				log(item)
+			})
 		})
 	});
 	socket.on('new_log', data=>{
-		console.log(data);
+		log(data)
 	});
+}
+
+function log(data){
+	let div = document.createElement("div")
+	div.classList.add("log", data.level)
+	let code = document.createElement("code")
+	if (data.message === null){
+		code.innerHTML = "None"
+		code.setAttribute("type", "none")
+	}
+	else if (typeof data.message === "boolean"){
+		code.innerHTML = data.message ? "True": "False"
+		code.setAttribute("type", "bool")
+	}
+	else if (typeof data.message === "number"){
+		code.textContent = data.message
+		code.setAttribute("type", "int")
+	}
+	else if (typeof data.message === "string"){
+		code.textContent = data.message
+		code.setAttribute("type", "str")
+
+		const urlPattern = /https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)/;
+		code.innerHTML = code.innerHTML.replace(urlPattern, (url) => {
+			return `<a href="${url}" target="_blank">${url}</a>`;
+		})
+	}
+	else if (typeof data.message === "object"){
+		code.classList.add("tree")
+		code.appendChild(buildTree(data.message))
+	}
+	else {
+		code.textContent = data.message
+	}
+	let link = document.createElement("a")
+	link.className = "caller"
+	link.innerHTML = `${data.filename}:${data.line}`
+	div.appendChild(link)
+	div.appendChild(code)
+	document.querySelector("#console").appendChild(div)
 }

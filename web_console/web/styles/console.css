@@ -1,0 +1,55 @@
+body {
+	font-family: sans-serif;
+	height: 100vh;
+	margin: 0;
+	padding: 0;
+}
+
+#console {
+	background: #282828;
+	color: #e3e3e3;
+	min-height: 100%;
+	box-sizing: border-box;
+	padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	font-size: 14px;
+	gap: 5px;
+}
+#console .log {
+	border-radius: 6px;
+	padding: 5px 6px;
+}
+#console .log.info{ background: #004a77; }
+#console .log.error{ background: #4e3534; }
+#console .log.warn{ background: #413c26; }
+#console .log code {
+	display: block;
+	font-family: monospace;
+	white-space: pre-wrap;
+	tab-size: 4;
+	overflow-x: auto;
+	scrollbar-width: thin;
+}
+#console .log a {
+	color: inherit;
+}
+#console .log .caller {
+	white-space: nowrap;
+	float: right;
+	position: sticky;
+	top: 5px;
+}
+
+#console [type="none"]{
+	color: #807777;
+}
+#console [type="bool"]{
+	color: #f859a8;
+}
+#console [type="str"]{
+	color: #fe8040;
+}
+#console [type="int"]{
+	color: #7b80f2;
+}

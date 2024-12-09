@@ -1,27 +1,11 @@
 .tree {
 	font-family: monospace;
-	font-size: 15px;
 	overflow-x: auto;
 	overflow-y: hidden;
+	scrollbar-width: thin;
 }
-.tree::before{
-	content: '{';
-}
-.tree::after{
-	content: '}';
-}
-
-.tree .value[type="none"]{
-	color: #807777;
-}
-.tree .value[type="bool"]{
-	color: #f859a8;
-}
-.tree .value[type="str"]{
-	color: #fe8040;
-}
-.tree .value[type="int"]{
-	color: #7b80f2;
+.tree .value a {
+	color: inherit;
 }
 .tree .value,
 .tree details summary {
@@ -61,7 +45,8 @@
 
 .tree ul {
 	list-style-type: none;
-	padding-left: 2.5rem;
+	margin: 0; padding: 0;
+	padding-left: 2rem;
 }
 .tree ul li {
 	margin: 0.3rem 0;

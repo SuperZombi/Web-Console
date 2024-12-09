@@ -4,23 +4,18 @@ import time
 import eventlet
 import socket
 import socketio
+import webbrowser
+import json
 
 
-def log_message(message):
-	frame = inspect.currentframe()
-	caller_frame = frame.f_back
-	line_number = caller_frame.f_lineno
-	file_path = caller_frame.f_code.co_filename
-	file_full_name = os.path.basename(file_path)
-	file_name = os.path.splitext(file_full_name)[0]
-	
-	print(f"{message} ({file_name}:{line_number})")
+__version__ = "0.1.0"
 
 
 class WebConsole:
-	def __init__(self, host="127.0.0.1", port=8080):
+	def __init__(self, host="127.0.0.1", port=8080, show_url=True, debug=False):
 		self.host = host
 		self.port = port
+		self.debug = debug
 		self.history = []
 		self.clients = []
 		cur_path = os.path.dirname(os.path.realpath(__file__))
@@ -35,16 +30,17 @@ class WebConsole:
 		self.sio.on('get_history', self.on_get_history)
 
 		self.sio.start_background_task(target=self.start)
-		print(f"Running on {self.url}")
+		if show_url: print(f"Web Console: {self.url}")
 
 	def start(self):
-		eventlet.wsgi.server(eventlet.listen((self.host, self.port)), self.app, log_output=False)
+		eventlet.wsgi.server(eventlet.listen((self.host, self.port)), self.app, log_output=self.debug)
 
 	@property
 	def url(self):
 		ip_address = socket.gethostbyname(socket.gethostname()) if self.host == "0.0.0.0" else self.host
 		return f"http://{ip_address}:{self.port}/"
 
+	def open(self): webbrowser.open(self.url)
 	def sleep(self, s): self.sio.sleep(s)
 	def loop(self):
 		try:
@@ -64,21 +60,37 @@ class WebConsole:
 	def emit(self, event, data, client=None):
 		eventlet.spawn(self.sio.emit, event, data, to=client)
 
-	def log(self, message):
-		frame = inspect.currentframe()
-		caller_frame = frame.f_back
-		line_number = caller_frame.f_lineno
-		file_path = caller_frame.f_code.co_filename
-		file_full_name = os.path.basename(file_path)
-		file_name = os.path.splitext(file_full_name)[0]
+	def jsonable(self, x):
+		try:
+			json.dumps(x)
+			return True
+		except:
+			return False
+
+	def log(self, message, log_level="info"):
+		def get_frame():
+			current_file = os.path.realpath(__file__)
+			stack = inspect.stack()
+			for frame in stack:
+				if frame.filename != current_file:
+					return frame
+
+		frame = get_frame()
+		line_number = frame.lineno
+		full_path = frame.filename
+		file_with_ext = os.path.basename(full_path)
+		file_name = os.path.splitext(file_with_ext)[0]
 
 		data = {
-			"type": "log",
+			"level": log_level,
 			"time": int(time.time()),
-			"message": message,
+			"message": message if self.jsonable(message) else str(message),
 			"filename": file_name,
+			"file_path": full_path,
 			"line": line_number
 		}
 		self.history.append(data)
 		self.emit('new_log', data)
-		print(f"{message} ({file_name}:{line_number})")
+
+	def warn(self, message): self.log(message, "warn")
+	def error(self, message): self.log(message, "error")

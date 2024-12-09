@@ -3,13 +3,18 @@ function buildNode(json_data){
 		let item_key = document.createElement("span")
 		item_key.className = "key"
 		item_key.innerHTML = val
-		setDataType(val, item_key)
 		return item_key
 	}
 	function parseValue(val) {
 		if (val === null){ return "None" }
 		else if (val === true){ return "True" }
 		else if (val === false){ return "False" }
+		else if (typeof val === "string"){
+			const urlPattern = /(https?:\/\/[^\s]+)/g;
+			return `"${val.replace(urlPattern, (url) => {
+				return `<a href="${url}" target="_blank">${url}</a>`;
+			})}"`;
+		}
 		return JSON.stringify(val)
 	}
 	function setDataType(val, el){
@@ -60,4 +65,20 @@ function buildNode(json_data){
 		list.appendChild(item)
 	}
 	return list
+}
+function buildTree(object){
+	if (typeof object === "object" && object !== null){
+		let details = document.createElement("details")
+		let summary = document.createElement("summary")
+		if (object.constructor.name === "Array"){
+			details.setAttribute("type", "array")
+		}
+		let empty_val = document.createElement("span")
+		empty_val.className = "value"
+		summary.appendChild(empty_val)
+
+		details.appendChild(summary)
+		details.appendChild(buildNode(object))
+		return details
+	}
 }
