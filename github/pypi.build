@@ -1,0 +1,15 @@
+{
+    "folder": "C:/Users/rost/Downloads/web_console",
+    "package_name": "web_console_log",
+    "version": "0.1.0",
+    "description": "Python Web Console",
+    "readme": "C:/Users/rost/Downloads/README.md",
+    "username": "Super_Zombi",
+    "email": "super.zombi.yt@gmail.com",
+    "github": "https://github.com/SuperZombi/Web-Console",
+    "python_ver": "3.9",
+    "dependencies": [
+        "eventlet",
+        "python-socketio"
+    ]
+}
