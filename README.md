@@ -2,6 +2,8 @@
 
 <img src="https://shields.io/badge/version-0.1.0-blue">
 
+<img src="https://raw.githubusercontent.com/SuperZombi/Web-Console/main/github/images/console.jpg" width="600px">
+
 ### Example usage
 ```python
 from web_console import WebConsole
