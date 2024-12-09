@@ -5,6 +5,9 @@
 <img src="https://raw.githubusercontent.com/SuperZombi/Web-Console/main/github/images/console.jpg" width="600px">
 
 ### Example usage
+```
+pip install web_console_log
+```
 ```python
 from web_console import WebConsole
 
